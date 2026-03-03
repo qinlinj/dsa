@@ -1,4 +1,4 @@
-package org.qinlinj.leetcode.editor.en;
+package org.qinlinj.dsa.array_operations.diff_array;
 import java.util.*;
 import org.qinlinj.leetcode.editor.common.*;
 // [370] Range Addition
