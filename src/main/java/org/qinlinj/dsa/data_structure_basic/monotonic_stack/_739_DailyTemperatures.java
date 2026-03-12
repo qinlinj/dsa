@@ -1,4 +1,5 @@
 package org.qinlinj.dsa.data_structure_basic.monotonic_stack;
+import java.util.*;
 import org.qinlinj.leetcode.editor.common.*;
 // [739] Daily Temperatures
 public class _739_DailyTemperatures {
@@ -9,7 +10,16 @@ public class _739_DailyTemperatures {
 //leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
     public int[] dailyTemperatures(int[] temperatures) {
-        return null;
+        Deque<Integer> stk = new LinkedList<>();
+        int[] result = new int[temperatures.length];
+        for (int i = temperatures.length - 1; i >= 0; i--) {
+            while (!stk.isEmpty() && temperatures[stk.peek()] <= temperatures[i]) {
+               stk.pop();
+            }
+            result[i] = stk.isEmpty() ? 0 : stk.peek() - i;
+            stk.push(i);
+        }
+        return result;
     }
 }
 //leetcode submit region end(Prohibit modification and deletion)
