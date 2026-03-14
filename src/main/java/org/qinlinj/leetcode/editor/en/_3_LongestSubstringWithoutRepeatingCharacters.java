@@ -8,7 +8,7 @@ public class _3_LongestSubstringWithoutRepeatingCharacters {
     }
 //leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
-    public int lengthOfLongestSubstring(String s) {
+    public int lengthOfLongestSubstring1(String s) {
         int[] map = new int[256];
         int left = 0;
         int right = 0;
@@ -25,6 +25,23 @@ class Solution {
             len = Math.max(len, (right - left));
         }
         return len;
+    }
+    public int lengthOfLongestSubstring(String s) {
+        int n = s.length();
+        int res = 0;
+        int[] lastIndex = new int[256];
+
+        for (int left = 0, right = 0; right < n; right++) {
+            char c = s.charAt(right);
+            // If the character occurs before, jump left to the next duplicate
+            // Note: Use Math.max to make sure left doesn’t jump back.
+            left = Math.max(lastIndex[c], left);
+
+            res = Math.max(res, right - left + 1);
+            // record/update index
+            lastIndex[c] = right + 1;
+        }
+        return res;
     }
 }
 //leetcode submit region end(Prohibit modification and deletion)
