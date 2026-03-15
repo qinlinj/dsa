@@ -1,21 +1,28 @@
 package org.qinlinj.dsa.data_structure_basic.hashing;
-import org.qinlinj.leetcode.editor.common.*;
-// [706] Design HashMap
-public class _706_DesignHashmap {
-    public static void main(String[] args) {
-        MyHashMap solution = new _706_DesignHashmap().new MyHashMap();
-    }
 
+/**
+ * Custom HashMap implementation using Open Addressing with Linear Probing.
+ * Optimized with Bitwise Operations for maximum performance.
+ */
+public class _0_OpenAddressingHashmap {
     class MyHashMap {
+        /**
+         * Basic storage unit for a Key-Value pair.
+         */
         private static class Node {
             int key;
             int value;
+
             Node(int key, int value) {
                 this.key = key;
                 this.value = value;
             }
         }
 
+        /**
+         * Sentinel 'Tombstone' node to mark a slot as deleted without breaking
+         * the probe sequence (ensures subsequent keys can still be found).
+         */
         private static final Node DELETED = new Node(-1, -1);
 
         private Node[] table;
@@ -31,6 +38,12 @@ public class _706_DesignHashmap {
             this.size = 0;
         }
 
+        /**
+         * Hash function with perturbation to reduce collisions.
+         * 1. (h >>> 16): Brings high-bit entropy down to the low-bits.
+         * 2. (^): XORs high and low bits to mix the signature.
+         * 3. (& mask): Fast bitwise alternative to (h % capacity).
+         */
         private int hash(int key) {
             int h = Integer.hashCode(key);
             h ^= (h >>> 16);
@@ -45,6 +58,9 @@ public class _706_DesignHashmap {
             internalPut(table, key, value);
         }
 
+        /**
+         * Core insertion logic. Supports reusing 'DELETED' slots (recycling).
+         */
         private void internalPut(Node[] targetTable, int key, int value) {
             int m = targetTable.length - 1;
             int h = Integer.hashCode(key);
@@ -102,6 +118,9 @@ public class _706_DesignHashmap {
             }
         }
 
+        /**
+         * Doubles the capacity and redistributes existing elements.
+         */
         private void rehash() {
             Node[] oldTable = table;
             capacity <<= 1;          // Bitwise shift left: effectively capacity * 2
@@ -116,61 +135,4 @@ public class _706_DesignHashmap {
             }
         }
     }
-/**
- * Your MyHashMap object will be instantiated and called as such:
- * MyHashMap obj = new MyHashMap();
- * obj.put(key,value);
- * int param_2 = obj.get(key);
- * obj.remove(key);
- */
-//leetcode submit region end(Prohibit modification and deletion)
-
 }
-
-// Design a HashMap without using any built-in hash table libraries.
-//
-//  Implement the MyHashMap class:
-//
-//
-//  MyHashMap() initializes the object with an empty map.
-//  void put(int key, int value) inserts a (key, value) pair into the HashMap. If
-// the key already exists in the map, update the corresponding value.
-//  int get(int key) returns the value to which the specified key is mapped, or -1
-// if this map contains no mapping for the key.
-//  void remove(key) removes the key and its corresponding value if the map
-// contains the mapping for the key.
-//
-//
-//
-//  Example 1:
-//
-//
-// Input
-// ["MyHashMap", "put", "put", "get", "get", "put", "get", "remove", "get"]
-// [[], [1, 1], [2, 2], [1], [3], [2, 1], [2], [2], [2]]
-// Output
-// [null, null, null, 1, -1, null, 1, null, -1]
-//
-// Explanation
-// MyHashMap myHashMap = new MyHashMap();
-// myHashMap.put(1, 1); // The map is now [[1,1]]
-// myHashMap.put(2, 2); // The map is now [[1,1], [2,2]]
-// myHashMap.get(1);    // return 1, The map is now [[1,1], [2,2]]
-// myHashMap.get(3);    // return -1 (i.e., not found), The map is now [[1,1], [2,2
-// ]]
-// myHashMap.put(2, 1); // The map is now [[1,1], [2,1]] (i.e., update the
-// existing value)
-// myHashMap.get(2);    // return 1, The map is now [[1,1], [2,1]]
-// myHashMap.remove(2); // remove the mapping for 2, The map is now [[1,1]]
-// myHashMap.get(2);    // return -1 (i.e., not found), The map is now [[1,1]]
-//
-//
-//
-//  Constraints:
-//
-//
-//  0 <= key, value <= 10⁶
-//  At most 10⁴ calls will be made to put, get, and remove.
-//
-//
-//  Related Topics Array Hash Table Linked List Design Hash Function 👍 5419 👎 501
