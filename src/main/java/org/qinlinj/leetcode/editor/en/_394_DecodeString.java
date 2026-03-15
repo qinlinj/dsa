@@ -12,6 +12,12 @@ class Solution {
     public String decodeString(String s) {
         Deque<String> strDeque = new ArrayDeque<>();
         Deque<Integer> countDeque = new ArrayDeque<>();
+        char[] cArray = s.toCharArray();
+        int k = 0;
+        StringBuilder sb = new StringBuilder();
+        for(char c : cArray) {
+
+        }
 
         return null;
     }
