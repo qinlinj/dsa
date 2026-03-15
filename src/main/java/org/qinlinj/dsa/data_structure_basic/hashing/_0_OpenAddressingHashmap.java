@@ -3,6 +3,7 @@ package org.qinlinj.dsa.data_structure_basic.hashing;
 /**
  * Custom HashMap implementation using Open Addressing with Linear Probing.
  * Optimized with Bitwise Operations for maximum performance.
+ * Added dynamic shrinking logic to maintain memory efficiency.
  */
 public class _0_OpenAddressingHashmap {
     class MyHashMap {
@@ -31,8 +32,16 @@ public class _0_OpenAddressingHashmap {
         private int mask;       // Used for (capacity - 1) bitwise masking
         private static final double LOAD_FACTOR = 0.5; // Threshold to trigger resizing
 
+        /**
+         * New constants for shrinking logic.
+         * SHRINK_FACTOR: If load drops below 12.5%, we downsize the table.
+         * MIN_CAPACITY: Minimum table size to avoid unnecessary resizing for small maps.
+         */
+        private static final double SHRINK_FACTOR = 0.125;
+        private static final int MIN_CAPACITY = 16;
+
         public MyHashMap() {
-            this.capacity = 16;
+            this.capacity = MIN_CAPACITY;
             this.mask = capacity - 1; // Pre-calculate mask for bitwise indexing
             this.table = new Node[capacity];
             this.size = 0;
@@ -53,7 +62,7 @@ public class _0_OpenAddressingHashmap {
         public void put(int key, int value) {
             // Monitor load factor to prevent performance degradation
             if ((double) size / capacity >= LOAD_FACTOR) {
-                rehash();
+                rehash(capacity << 1); // Double the capacity
             }
             internalPut(table, key, value);
         }
@@ -111,6 +120,15 @@ public class _0_OpenAddressingHashmap {
                     // Lazy deletion: mark as DELETED to preserve the probe chain
                     table[idx] = DELETED;
                     size--;
+
+                    /**
+                     * Shrinking check:
+                     * If the current size is less than 12.5% of capacity, we downsize
+                     * to save memory, ensuring we don't go below the MIN_CAPACITY.
+                     */
+                    if (capacity > MIN_CAPACITY && (double) size / capacity < SHRINK_FACTOR) {
+                        rehash(capacity >> 1); // Halve the capacity
+                    }
                     return;
                 }
                 idx = (idx + 1) & mask;
@@ -119,16 +137,21 @@ public class _0_OpenAddressingHashmap {
         }
 
         /**
-         * Doubles the capacity and redistributes existing elements.
+         * Redistributes existing elements into a table of the specified new capacity.
+         * This handles both expansion and shrinking.
          */
-        private void rehash() {
+        private void rehash(int newCapacity) {
             Node[] oldTable = table;
-            capacity <<= 1;          // Bitwise shift left: effectively capacity * 2
-            mask = capacity - 1;     // Update mask for the new size
-            table = new Node[capacity];
-            size = 0;                // Reset size as internalPut will re-increment it
+            this.capacity = newCapacity;
+            this.mask = capacity - 1;     // Update mask for the new size
+            this.table = new Node[capacity];
+            this.size = 0;                // Reset size as internalPut will re-increment it
 
             for (Node node : oldTable) {
+                /**
+                 * During rehash, we discard all DELETED (tombstone) nodes.
+                 * This acts as a 'defragmentation' step, cleaning up the probe chains.
+                 */
                 if (node != null && node != DELETED) {
                     internalPut(table, node.key, node.value);
                 }
