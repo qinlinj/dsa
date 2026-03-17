@@ -1,4 +1,4 @@
-package org.qinlinj.leetcode.editor.en;
+package org.qinlinj.dsa.data_structure_basic.stack_and_queue;
 import java.util.*;
 import org.qinlinj.leetcode.editor.common.*;
 // [394] Decode String
@@ -15,7 +15,7 @@ class Solution {
         char[] cArray = s.toCharArray();
         int k = 0;
         StringBuilder sb = new StringBuilder();
-
+        
         for(char c : cArray) {
             if (Character.isDigit(c)) {
                 k = k * 10 + (c - '0');
