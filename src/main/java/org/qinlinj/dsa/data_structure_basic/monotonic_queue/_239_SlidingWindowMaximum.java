@@ -1,4 +1,4 @@
-package org.qinlinj.leetcode.editor.en;
+package org.qinlinj.dsa.data_structure_basic.monotonic_queue;
 import java.util.*;
 import org.qinlinj.leetcode.editor.common.*;
 // [239] Sliding Window Maximum
