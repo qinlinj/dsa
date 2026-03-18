@@ -1,4 +1,5 @@
 package org.qinlinj.leetcode.editor.en;
+import java.util.*;
 import org.qinlinj.leetcode.editor.common.*;
 // [1438] Longest Continuous Subarray With Absolute Diff Less Than or Equal to Limit
 public class _1438_LongestContinuousSubarrayWithAbsoluteDiffLessThanOrEqualToLimit {
@@ -9,7 +10,72 @@ public class _1438_LongestContinuousSubarrayWithAbsoluteDiffLessThanOrEqualToLim
 //leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
     public int longestSubarray(int[] nums, int limit) {
-        return 0;
+        MonotonicQueue queue = new MonotonicQueue();
+        int left = 0, right = 0;
+        int n = nums.length;
+        int windowSize = 0;
+        while (right < n) {
+            queue.push(nums[right]);
+            right++;
+            while (queue.getMax() - queue.getMin() > limit) {
+                left++;
+                queue.pop();
+            }
+            windowSize = Math.max(windowSize, right - left);
+        }
+
+        return windowSize;
+    }
+
+    static class MonotonicQueue {
+        LinkedList<Integer> maxQ;
+        LinkedList<Integer> minQ;
+        LinkedList<Integer> q;
+
+        public MonotonicQueue() {
+            maxQ = new LinkedList<>();
+            minQ = new LinkedList<>();
+            q = new LinkedList<>();
+        }
+
+        public int pop() {
+            int deletedItem = q.removeFirst();
+            if (minQ.getFirst() == deletedItem) {
+                minQ.removeFirst();
+            }
+            if (maxQ.getFirst() == deletedItem) {
+                maxQ.removeFirst();
+            }
+            return deletedItem;
+        }
+
+        public void push(int i) {
+            while (!minQ.isEmpty() && minQ.getLast() > i) {
+                minQ.removeLast();
+            }
+            minQ.addLast(i);
+            while (!maxQ.isEmpty() && maxQ.getLast() < i) {
+                maxQ.removeLast();
+            }
+            maxQ.addLast(i);
+            q.addLast(i);
+        }
+
+        public int getMax() {
+            return maxQ.getFirst();
+        }
+
+        public int getMin() {
+            return minQ.getFirst();
+        }
+
+        public int size() {
+            return q.size();
+        }
+
+        public boolean isEmpty() {
+            return q.isEmpty();
+        }
     }
 }
 //leetcode submit region end(Prohibit modification and deletion)
