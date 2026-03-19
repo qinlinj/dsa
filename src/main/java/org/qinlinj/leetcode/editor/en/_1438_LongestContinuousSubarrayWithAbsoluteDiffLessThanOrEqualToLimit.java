@@ -10,6 +10,32 @@ public class _1438_LongestContinuousSubarrayWithAbsoluteDiffLessThanOrEqualToLim
 //leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
     public int longestSubarray(int[] nums, int limit) {
+        int n = nums.length;
+        int[] maxQ = new int[n];
+        int[] minQ = new int[n];
+        int maxHead = 0, maxTail = 0;
+        int minHead = 0, minTail = 0;
+        int left = 0, res = 0;
+
+        for (int right = 0; right < n; right++) {
+            while (maxTail > maxHead && nums[maxQ[maxTail - 1]] < nums[right]) maxTail--;
+            maxQ[maxTail++] = right;
+
+            while (minTail > minHead && nums[minQ[minTail - 1]] > nums[right]) minTail--;
+            minQ[minTail++] = right;
+
+            while (nums[maxQ[maxHead]] - nums[minQ[minHead]] > limit) {
+                left++;
+                if (maxQ[maxHead] < left) maxHead++;
+                if (minQ[minHead] < left) minHead++;
+            }
+
+            res = Math.max(res, right - left + 1);
+        }
+        return res;
+    }
+
+    public int longestSubarray1(int[] nums, int limit) {
         MonotonicQueue queue = new MonotonicQueue();
         int left = 0, right = 0;
         int n = nums.length;
