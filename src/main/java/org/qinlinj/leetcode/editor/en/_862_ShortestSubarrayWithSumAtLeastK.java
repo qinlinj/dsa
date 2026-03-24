@@ -11,6 +11,29 @@ class Solution {
     public int shortestSubarray(int[] nums, int k) {
         int n = nums.length;
         long[] preSum = new long[n + 1];
+        for (int i = 0; i < n; i++) preSum[i + 1] = preSum[i] + nums[i];
+
+        int[] q = new int[n + 1];
+        int head = 0, tail = 0;
+        int res = n + 1;
+
+        for (int i = 0; i < preSum.length; i++) {
+            while (tail > head && preSum[i] - preSum[q[head]] >= (long)k) {
+                res = Math.min(res, i - q[head]);
+                head++;
+            }
+
+            while (tail > head && preSum[i] <= preSum[q[tail - 1]]) {
+                tail--;
+            }
+            q[tail++] = i;
+        }
+        return res > n ? -1 : res;
+    }
+
+    public int shortestSubarray1(int[] nums, int k) {
+        int n = nums.length;
+        long[] preSum = new long[n + 1];
         for (int i = 0; i < n; i++) {
             preSum[i + 1] = preSum[i] + nums[i];
         }
