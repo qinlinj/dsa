@@ -1,4 +1,4 @@
-package org.qinlinj.leetcode.editor.en;
+package org.qinlinj.dsa.data_structure_basic.monotonic_queue;
 import org.qinlinj.leetcode.editor.common.*;
 // [862] Shortest Subarray with Sum at Least K
 public class _862_ShortestSubarrayWithSumAtLeastK {
